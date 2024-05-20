@@ -1,2 +1,3 @@
 java_version: openjdk-8-jdk
 python_version: python3
+cassandra_version: 41x
