@@ -15,6 +15,7 @@
     apt:
       update_cache: yes
 
+  # /etc/cassandra
   - name: Install Apache Cassandra
     apt:
       name:
