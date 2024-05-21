@@ -6,7 +6,11 @@ ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_cass
 
 # 3. Copy .pub to ~/.ssh/authorized_keys of inventory host(s)
 
-# 4. Execute playbooks (initialize -> install -> configure)
+# 4. Choose database role (dialect)
+
+# 5. Execute setup.yaml playbook
+ansible-playbook setup.yaml -K
+
 ```
 
 ### Examples
@@ -14,6 +18,3 @@ ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_cass
 ```sh
 # test inventories
 ansible all -m ping
-
-# run playbook (-K => prompt for password if needed)
-ansible-playbook install-cassandra.yaml -K

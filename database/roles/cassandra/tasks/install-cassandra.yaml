@@ -1,0 +1,26 @@
+- name: Install Cassandra
+  block:
+      - name: Download & Add GPG key
+        shell: "sudo wget -q -O - https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add -"
+
+      - name: Add repository
+        shell: "echo \"deb [signed-by=/etc/apt/keyrings/apache-cassandra.asc] https://debian.cassandra.apache.org \"{{cassandra_version}}\" main\" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list"
+
+      - name: Update apt
+        apt:
+          update_cache: yes
+
+      # /etc/cassandra
+      - name: Install Apache Cassandra
+        apt:
+          name:
+          - "cassandra"
+        register: aptout
+
+      - debug: var=aptout
+
+      - name: Run Cassandra on system boot & check status
+        shell: "sudo systemctl enable cassandra && sudo systemctl status cassandra"
+
+  rescue:
+    - import_tasks: ./helpers/on-error.yaml

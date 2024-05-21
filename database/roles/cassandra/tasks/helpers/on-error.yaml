@@ -1,0 +1,10 @@
+- set_fact:
+    is_error_known: '{{ "undefined variable" not in ansible_failed_result.msg }}'
+- name: Print ERROR task name
+  debug:
+    msg: "TASK '{{ ansible_failed_task.name }}' caused an error!"
+- name: Print ERROR message
+  debug:
+    msg: '{{ ansible_failed_result }}'
+  when: is_error_known
+- meta: end_play 

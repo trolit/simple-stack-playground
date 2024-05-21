@@ -1,0 +1,6 @@
+- name: Configure database
+  hosts: all
+  become: yes
+  become_method: su
+  roles:
+    - cassandra
