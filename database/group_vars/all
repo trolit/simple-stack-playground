@@ -1,3 +1,7 @@
 java_version: openjdk-8-jdk
 python_version: python3
+
+cassandra_dir: /etc/cassandra
 cassandra_version: 41x
+cassandra_user: cassandra
+cassandra_group: cassandra
