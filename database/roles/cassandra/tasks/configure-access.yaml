@@ -1,0 +1,23 @@
+- name: Set user & group
+  block:
+      - name: Create '{{ group }}' group
+        shell: sudo groupadd -f '{{ group }}'
+
+      - name: Create '{{ user }}' user with temporary password
+        user: 
+          name: "{{ user }}"
+          password: "{{ '1234' | password_hash('sha512') }}"
+          groups: "{{ group }}"
+          home: "{{ dir }}"
+          shell: "/bin/bash"
+          register: user
+
+      - name: Force '{{ user }}' to change password
+        shell: chage -d 0 '{{ user }}'
+        when: user.changed
+
+      - name: Revoke others rights from '{{ dir }}'
+        shell: chmod 760 '{{ dir }}'
+
+  rescue:
+    - import_tasks: ./helpers/on-error.yaml

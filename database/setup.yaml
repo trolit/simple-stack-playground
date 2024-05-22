@@ -1,0 +1,6 @@
+- name: Configure '{{ role }}' database
+  hosts: '{{ role }}'
+  become: yes
+  become_method: su
+  roles:
+    - '{{ role }}'
