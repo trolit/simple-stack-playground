@@ -1,23 +1,23 @@
 - name: Set user & group
   block:
-      - name: Create '{{ cassandra_group }}' group
-        shell: sudo groupadd -f '{{ cassandra_group }}'
+      - name: Create '{{ group }}' group
+        shell: sudo groupadd -f '{{ group }}'
 
-      - name: Create '{{ cassandra_user }}' user with temporary password
+      - name: Create '{{ user }}' user with temporary password
         user: 
-          name: "{{ cassandra_user }}"
+          name: "{{ user }}"
           password: "{{ '1234' | password_hash('sha512') }}"
-          groups: "{{ cassandra_group }}"
-          home: "{{ cassandra_dir }}"
+          groups: "{{ group }}"
+          home: "{{ dir }}"
           shell: "/bin/bash"
           register: user
 
-      - name: Force '{{ cassandra_user }}' to change password
-        shell: chage -d 0 '{{ cassandra_user }}'
+      - name: Force '{{ user }}' to change password
+        shell: chage -d 0 '{{ user }}'
         when: user.changed
 
-      - name: Revoke others rights from '{{ cassandra_dir }}'
-        shell: chmod 760 '{{ cassandra_dir }}'
+      - name: Revoke others rights from '{{ dir }}'
+        shell: chmod 760 '{{ dir }}'
 
   rescue:
     - import_tasks: ./helpers/on-error.yaml

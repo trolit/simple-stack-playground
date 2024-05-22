@@ -4,7 +4,7 @@
         shell: "sudo wget -q -O - https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add -"
 
       - name: Add repository
-        shell: "echo \"deb [signed-by=/etc/apt/keyrings/apache-cassandra.asc] https://debian.cassandra.apache.org \"{{cassandra_version}}\" main\" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list"
+        shell: "echo \"deb [signed-by=/etc/apt/keyrings/apache-cassandra.asc] https://debian.cassandra.apache.org \"{{version}}\" main\" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list"
 
       - name: Update apt
         apt:
