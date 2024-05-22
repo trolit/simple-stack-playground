@@ -8,8 +8,10 @@ ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_cass
 
 # 4. Execute setup.yaml playbook for chosen role
 ansible-playbook setup.yaml --extra-vars "role=cassandra" -K
-
 ```
+
+> [!NOTE]
+> Cassandra repository was moved on 20.05 (https://apache.jfrog.io/ui/native/cassandra-deb) and it's not possible to install it that way. "Repository is not signed"
 
 ### Examples
 
