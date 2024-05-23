@@ -1,0 +1,35 @@
+- name: Adjust access
+  block:
+      - name: Include credentials file
+        include_vars:
+          file: credentials.yaml
+          
+      - name: Set postgres password
+        shell: sudo -u postgres psql template1 -c "ALTER USER postgres with encrypted password '{{ postgres_password }}'"
+
+      - name: Set postgres authentication method
+        lineinfile: 
+          path: /etc/postgresql/{{ version }}/main/pg_hba.conf
+          regexp: 'local[ \t]+all[ \t]+postgres[ \t]+peer' 
+          line: 'local all postgres md5'
+          backrefs: yes
+          firstmatch: yes
+
+      - name: Set user external TCP/IP connection (IPv4)
+        lineinfile: 
+          path: /etc/postgresql/{{ version }}/main/pg_hba.conf
+          regexp: 'host[ \t]+all[ \t]+all[ \t]+0\.0\.0\.0\/0[ \t]+md5' 
+          line: 'host {{ database }} {{ user }} 0.0.0.0/0 md5'
+          backrefs: yes
+          firstmatch: yes
+
+      - name: Set user external TCP/IP connection (IPv6)
+        lineinfile: 
+          path: /etc/postgresql/{{ version }}/main/pg_hba.conf
+          regexp: 'host[ \t]+all[ \t]+all[ \t]+::\/0[ \t]+md5' 
+          line: 'host {{ database }} {{ user }} ::/0 md5'
+          backrefs: yes
+          firstmatch: yes
+
+      - name: Restart postgres
+        shell: sudo /etc/init.d/postgresql restart

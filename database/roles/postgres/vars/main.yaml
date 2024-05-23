@@ -1,0 +1,6 @@
+version: 16
+apt: https://apt.postgresql.org/pub/repos/apt
+key_url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+
+database: test
+user: tarin

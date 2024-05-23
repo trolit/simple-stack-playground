@@ -1,0 +1,11 @@
+- name: Create user
+  block:
+      - name: Include credentials file
+        include_vars:
+          file: credentials.yaml
+
+      - name: Add user
+        shell: sudo -u postgres psql -c "CREATE USER {{ user }} WITH PASSWORD '{{ user_password }}'";
+
+      - name: Grant privileges
+        shell: sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE {{ database }} TO {{ user }};"
