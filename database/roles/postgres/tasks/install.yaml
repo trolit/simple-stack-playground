@@ -1,0 +1,47 @@
+- name: Install Postgres
+  block:
+      - name: Add dependencies
+        apt:
+          name:
+          - curl
+          - ca-certificates
+
+      - name: Install pgdg
+        shell: sudo install -d /usr/share/postgresql-common/pgdg
+
+      - name: Get key
+        shell: "sudo curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc --fail {{ key_url }}"
+
+      - name: Add postgresql to apt
+        shell: sudo sh -c 'echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] {{ apt }} $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+
+      - name: Update apt
+        apt:
+          update_cache: yes
+
+      - name: Install postgresql
+        apt:
+          name:
+          - postgresql-{{ version }}
+        register: aptout
+
+      - debug: var=aptout
+
+      - name: Create pg_hba.conf
+        ansible.builtin.copy:
+          src: ../pg_hba.conf.sample
+          dest: /etc/postgresql/{{ version }}/main/pg_hba.conf
+          owner: postgres
+          group: postgres
+          mode: u=rw,og=r
+
+      - name: Create postgresql.conf
+        ansible.builtin.copy:
+          src: ../postgresql.conf.sample
+          dest: /etc/postgresql/{{ version }}/main/postgresql.conf
+          owner: postgres
+          group: postgres
+          mode: u=rw,og=r
+
+      - name: Check version of PostgreSQL
+        shell: pg_config --version
