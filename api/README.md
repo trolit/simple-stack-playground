@@ -1,3 +1,5 @@
+Prisma - [Start from scratch](https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch)
+
 Apply migration & generate file:
 
 ```bash
