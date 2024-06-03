@@ -9,6 +9,3 @@
 
       - name: Grant privileges
         shell: sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE {{ database }} TO {{ user }};"
-
-      - name: Make owner
-        shell: sudo -u postgres psql -c "ALTER DATABASE {{ database }} OWNER TO {{ user }};"
