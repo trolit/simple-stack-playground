@@ -1,5 +1,9 @@
-export default (app) => {
-    app.get('/', function (req, res) {
-        res.send('Hello World');
+export default (app, prisma) => {
+    app.get('/users', async function (req, res) {
+        const users = await prisma.user.findMany();
+        
+        return res.send({
+            data: users
+        });
     })
 }

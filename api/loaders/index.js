@@ -1,5 +1,8 @@
+import { PrismaClient } from '@prisma/client';
 import expressLoader from './express.js';
 
 export default async (app) => {
-  expressLoader(app);
+  const prisma = new PrismaClient();
+
+  expressLoader(app, prisma);
 }
