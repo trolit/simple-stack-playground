@@ -16,20 +16,20 @@
           firstmatch: yes
 
       - name: Set user external TCP/IP connection (IPv4)
-        lineinfile: 
+        blockinfile: 
           path: /etc/postgresql/{{ version }}/main/pg_hba.conf
-          regexp: 'host[ \t]+all[ \t]+all[ \t]+0\.0\.0\.0\/0[ \t]+md5' 
-          line: 'host {{ database }} {{ user }} 0.0.0.0/0 md5'
-          backrefs: yes
-          firstmatch: yes
+          marker: "# {mark} IPv4 CONNECTIONS BLOCK"
+          block: |
+              host {{ database }} {{ user }} 0.0.0.0/0 md5
+              host {{ shadow_database }} {{ user }} 0.0.0.0/0 md5
 
       - name: Set user external TCP/IP connection (IPv6)
-        lineinfile: 
+        blockinfile: 
           path: /etc/postgresql/{{ version }}/main/pg_hba.conf
-          regexp: 'host[ \t]+all[ \t]+all[ \t]+::\/0[ \t]+md5' 
-          line: 'host {{ database }} {{ user }} ::/0 md5'
-          backrefs: yes
-          firstmatch: yes
+          marker: "# {mark} IPv6 CONNECTIONS BLOCK"
+          block: |
+              host {{ database }} {{ user }} ::/0 md5
+              host {{ shadow_database }} {{ user }} ::/0 md5
 
       - name: Restart postgres
         shell: sudo /etc/init.d/postgresql restart
