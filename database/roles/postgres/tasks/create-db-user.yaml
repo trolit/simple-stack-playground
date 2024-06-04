@@ -7,8 +7,8 @@
       - name: Add user
         shell: sudo -u postgres psql -c "CREATE USER {{ user }} WITH PASSWORD '{{ user_password }}'";
 
-      - name: Grant privileges
-        shell: sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE {{ database }} TO {{ user }};"
-
-      - name: Grant database ownership
+      - name: Change database ownership
         shell: sudo -u postgres psql -c "ALTER DATABASE {{ database }} OWNER TO {{ user }};"
+
+      - name: Change shadow database ownership
+        shell: sudo -u postgres psql -c "ALTER DATABASE {{ shadow_database }} OWNER TO {{ user }};"
