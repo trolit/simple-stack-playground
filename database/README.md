@@ -6,7 +6,9 @@ ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_cass
 
 # 3. Copy .pub to ~/.ssh/authorized_keys of inventory host(s)
 
-# 4. Execute setup.yaml playbook for chosen role
+# 4. Install openssh-server if host(s) don't have it
+
+# 5. Execute setup.yaml playbook for chosen role
 ansible-playbook setup.yaml --extra-vars "role=cassandra" -K
 ```
 
