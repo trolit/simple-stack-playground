@@ -9,7 +9,7 @@ export default (app, prisma) => {
 
     app.get('/users', async function (req, res) {
         const users = await prisma.user.findMany();
-        
+
         return res.status(200).send({
             data: users
         });
@@ -26,10 +26,10 @@ export default (app, prisma) => {
 
         const user = await prisma.user.create({
             data: {
-              name,
-              email,
+                name,
+                email,
             },
-          })
+        })
 
         return res.status(201).send({
             data: user
