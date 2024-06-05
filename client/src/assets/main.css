@@ -18,16 +18,14 @@ header {
   font-size: 40px;
   align-items: center;
   margin-bottom: 20px;
-  background-image: linear-gradient(to right top, #efff40, #6dff8c, #00f1d6, #00d9ff, #4ebaff);
+  padding: 0 25px;
+  justify-content: space-between;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
-
-  img {
-    margin-left: 20px;
-  }
+  background-image: linear-gradient(to right top, #efff40, #6dff8c, #00f1d6, #00d9ff, #4ebaff);
 
   span {
-    color: black;
+    color: #2193da;
     font-variant: small-caps;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
   }
@@ -38,8 +36,8 @@ header {
 }
 
 .home-view {
-  display: flex;
   gap: 30px;
+  display: flex;
   justify-content: space-evenly;
 
   .block {
