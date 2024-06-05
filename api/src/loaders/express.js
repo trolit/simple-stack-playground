@@ -8,7 +8,13 @@ export default (app, prisma) => {
     app.use(express.json())
 
     app.get('/users', async function (req, res) {
-        const users = await prisma.user.findMany();
+        let users = [];
+
+        try {
+            users = await prisma.user.findMany();
+        } catch (error) {
+            return res.status(500).send('Database not running!')
+        }
 
         return res.status(200).send({
             data: users
@@ -24,12 +30,18 @@ export default (app, prisma) => {
             })
         }
 
-        const user = await prisma.user.create({
-            data: {
-                name,
-                email,
-            },
-        })
+        let user;
+
+        try {
+            user = await prisma.user.create({
+                data: {
+                    name,
+                    email,
+                },
+            })
+        } catch (error) {
+            return res.status(500).send('Database not running!')
+        }
 
         return res.status(201).send({
             data: user
