@@ -1,0 +1,50 @@
+@import './base.css';
+
+#app {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  font-weight: normal;
+}
+
+main {
+  margin: 0 25px;
+}
+
+header {
+  height: 150px;
+  display: flex;
+  font-size: 40px;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 0 25px;
+  justify-content: space-between;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  background-image: linear-gradient(to right top, #efff40, #6dff8c, #00f1d6, #00d9ff, #4ebaff);
+
+  span {
+    color: #2193da;
+    font-variant: small-caps;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+  }
+}
+
+.text-error {
+  color: red;
+}
+
+.home-view {
+  gap: 30px;
+  display: flex;
+  justify-content: space-evenly;
+
+  .block {
+    width: 100%;
+  }
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
