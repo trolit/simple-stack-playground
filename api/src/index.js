@@ -13,7 +13,7 @@ app.listen(PORT, err => {
     return process.exit(1);
   }
 
-  console.log(`Server is running at http://localhost:${PORT} 🔥`);
+  console.log(`Server is running at http://127.0.0.1:${PORT} 🔥`);
 });
 
 export default app;
