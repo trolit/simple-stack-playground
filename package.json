@@ -1,0 +1,10 @@
+{
+    "name": "sstackplayground",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "dc-up": "docker compose up -d",
+        "dc-down": "docker compose down",
+        "dc-build": "docker compose build"
+    }
+}
