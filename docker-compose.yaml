@@ -1,0 +1,16 @@
+services:
+  api:
+    image: api
+    build: ./api
+    container_name: api
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+
+  client:
+    image: client
+    build: ./client
+    container_name: client
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5173:8080"
