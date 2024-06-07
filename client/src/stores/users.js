@@ -2,7 +2,9 @@ import axios from 'axios';
 import { defineStore } from 'pinia'
 
 export const useUsersStore = defineStore('user', {
-    state: () => ({ users: [] }),
+    state: () => ({
+        users: []
+    }),
 
     getters: {
         USERS: (state) => state.users
