@@ -11,6 +11,7 @@ package-lock.json
 node_modules
 .env
 .terraform
+*.tfstate*
 
 # Test binary, built with `go test -c`
 *.test
