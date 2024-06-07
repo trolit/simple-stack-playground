@@ -19,4 +19,4 @@ services:
     container_name: client
     restart: unless-stopped
     ports:
-      - "127.0.0.1:5173:8080"
+      - "127.0.0.1:5173:80"
