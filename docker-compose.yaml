@@ -1,7 +1,10 @@
 services:
   api:
     image: api
-    build: ./api
+    build:
+      context: ./api
+      args:
+          CLIENT_URL: ${CLIENT_URL}
     container_name: api
     restart: unless-stopped
     ports:
@@ -9,8 +12,11 @@ services:
 
   client:
     image: client
-    build: ./client
+    build:
+      context: ./client
+      args:
+          API_URL: ${API_URL}
     container_name: client
     restart: unless-stopped
     ports:
-      - "127.0.0.1:5173:8080"
+      - "127.0.0.1:5173:80"

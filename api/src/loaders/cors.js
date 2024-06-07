@@ -9,7 +9,7 @@ export default (app) => {
 
     app.use(cors({
         origin: function (origin, callback) {
-            if (whitelist.indexOf(origin) !== -1) {
+            if (!origin || whitelist.indexOf(origin) !== -1) {
                 return callback(null, true);
             }
 
