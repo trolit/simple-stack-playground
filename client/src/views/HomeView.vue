@@ -1,7 +1,7 @@
 <template>
   <div class="home-view">
     <div class="block">
-      <Users :value="usersStore.USERS" :error="getAllError">
+      <Users :value="users" :error="getAllError">
         <template #actions>
           <button :disabled="isLoading" @click="fetchUsers">Try again</button>
         </template>
@@ -34,6 +34,12 @@ export default {
       getAllError: "",
       isLoading: false,
     };
+  },
+
+  computed: {
+    users() {
+      return this.usersStore.USERS;
+    }
   },
 
   methods: {
