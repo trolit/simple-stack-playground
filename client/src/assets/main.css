@@ -43,6 +43,26 @@ header {
   .block {
     width: 100%;
   }
+
+  .users {
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+
+    .user {
+      height: 60px;
+      display: flex;
+      font-size: 20px;
+      border-radius: 5px;
+      align-items: center;
+      background-color: #59679d;
+      justify-content: space-evenly;
+
+      div:first-of-type {
+        font-size: 45px;
+      }
+    }
+  }
 }
 
 .mt-10 {
