@@ -1,4 +1,5 @@
 FROM node:18
+ARG CLIENT_URL
 
 WORKDIR /app
 
@@ -14,5 +15,7 @@ USER node
 RUN npm install
 
 COPY --chown=node:node . .
+
+RUN sed -i "s#ORIGIN_WHITELIST=.*#ORIGIN_WHITELIST=${CLIENT_URL}#g" .env
 
 CMD node ./src/index.js
