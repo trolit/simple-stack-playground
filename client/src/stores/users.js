@@ -2,7 +2,9 @@ import axios from 'axios';
 import { defineStore } from 'pinia'
 
 export const useUsersStore = defineStore('user', {
-    state: () => ({ users: [] }),
+    state: () => ({
+        users: []
+    }),
 
     getters: {
         USERS: (state) => state.users
@@ -17,13 +19,15 @@ export const useUsersStore = defineStore('user', {
             return data;
         },
 
-        create({ email, name }) {
+        async create({ email, name }) {
             const payload = {
                 email,
                 name
             }
 
-            return axios.post('/users', payload);
+            const { data } = await axios.post('/users', payload);
+
+            this.users.push(data);
         },
     }
 })

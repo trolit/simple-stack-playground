@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Form</h1>
+        <h1>User form</h1>
 
         <p>Name</p>
         <input v-model="formData.name" placeholder="Name" />

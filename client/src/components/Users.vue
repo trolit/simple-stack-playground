@@ -14,9 +14,15 @@
             </div>
         </div>
 
-        <div v-else>
-            <div v-for="(user, index) in value" :key="index">
-                {{ user.name }} - {{ user.email }}
+        <div v-else class="users">
+            <div v-for="(user, index) in value" :key="index" class="user">
+                <div>
+                    {{ user.name }}
+                </div>
+
+                <div>
+                    {{ user.email }}
+                </div>
             </div>
         </div>
 

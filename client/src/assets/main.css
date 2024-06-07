@@ -25,7 +25,7 @@ header {
   background-image: linear-gradient(to right top, #efff40, #6dff8c, #00f1d6, #00d9ff, #4ebaff);
 
   span {
-    color: #2193da;
+    color: #ffd900;
     font-variant: small-caps;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
   }
@@ -42,6 +42,26 @@ header {
 
   .block {
     width: 100%;
+  }
+
+  .users {
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+
+    .user {
+      height: 60px;
+      display: flex;
+      font-size: 20px;
+      border-radius: 5px;
+      align-items: center;
+      background-color: #59679d;
+      justify-content: space-evenly;
+
+      div:first-of-type {
+        font-size: 45px;
+      }
+    }
   }
 }
 
