@@ -6,10 +6,6 @@ export const useUsersStore = defineStore('user', {
         users: []
     }),
 
-    getters: {
-        USERS: (state) => state.users
-    },
-
     actions: {
         async getAll() {
             const { data } = await axios.get('/users');

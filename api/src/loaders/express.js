@@ -16,9 +16,7 @@ export default (app, prisma) => {
             return res.status(500).send('Database not running!')
         }
 
-        return res.status(200).send({
-            data: users
-        });
+        return res.status(200).send(users);
     })
 
     app.post('/users', async function (req, res) {
@@ -43,8 +41,6 @@ export default (app, prisma) => {
             return res.status(500).send('Database not running!')
         }
 
-        return res.status(201).send({
-            data: user
-        });
+        return res.status(201).send(user);
     })
 }
