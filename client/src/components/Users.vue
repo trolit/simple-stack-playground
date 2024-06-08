@@ -14,6 +14,10 @@
             </div>
         </div>
 
+        <div v-else-if="!value.length">
+            No users available! ( • ᴖ • ｡)
+        </div>
+
         <div v-else class="users">
             <div v-for="(user, index) in value" :key="index" class="user">
                 <div>
