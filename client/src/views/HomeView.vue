@@ -38,7 +38,7 @@ export default {
 
   computed: {
     users() {
-      return this.usersStore.USERS;
+      return this.usersStore.users;
     }
   },
 
