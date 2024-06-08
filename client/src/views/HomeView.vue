@@ -1,11 +1,7 @@
 <template>
   <div class="home-view">
     <div class="block">
-      <Users :value="users" :error="getAllError">
-        <template #actions>
-          <button :disabled="isLoading" @click="fetchUsers">Try again</button>
-        </template>
-      </Users>
+      <Users :value="users" :error="getAllError" :is-loading="isLoading" @refetch="fetchUsers" />
     </div>
 
     <div class="block">
