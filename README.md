@@ -62,7 +62,6 @@
    db1 ansible_host=192.168.0.7
    ```
 
-   > [!NOTE]
    > Use `ansible postgres -m ping` to test if it's reachable
 
 2. Execute `quick-start.sh` script from root dir.
@@ -106,7 +105,6 @@
    terraform apply
    ```
 
-   > [!NOTE]
    > If creating client service fails and you don't want to wait until K8S tries to resurrect it again, re-run it manually after few seconds
 
 6. Run migrations by accessing `api`:
