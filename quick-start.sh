@@ -9,6 +9,7 @@ COLOR_YELLOW='\033[0;93m'
 current_step=1
 database_host=''
 database_provider='postgres'
+run_from_step=''
 
 run_in_strict_mode() {
     set -T # inherit DEBUG and RETURN trap for functions
@@ -16,6 +17,20 @@ run_in_strict_mode() {
     set -E # inherit -e
     set -e # exit immediately on errors
     set -u # exit on not assigned variables
+}
+
+load_args() {
+    while [ $# -gt 0 ]; do
+        case "$1" in
+        --from-step=*)
+            run_from_step="${1#*=}"
+            ;;
+        *)
+            log_error "Invalid argument passed to script!"
+            ;;
+        esac
+        shift
+    done
 }
 
 move_to_script_directory_if_needed() {
@@ -84,9 +99,19 @@ log_note() {
 }
 
 execute_step() {
-    log_note "Step ${current_step}: $1"
+    local is_skipped=1
+    local text="Step ${current_step}: $1"
 
-    $2
+    if [ ! -z "${run_from_step}" ] && [ $current_step -lt $run_from_step ]; then
+        is_skipped=0
+        text+=" ${COLOR_YELLOW}(skipped)${COLOR_OFF}"
+    fi
+
+    log_note "${text}"
+
+    if [ $is_skipped -eq 1 ]; then
+        $2
+    fi
 
     ((current_step++))
 }
@@ -135,6 +160,8 @@ step_connection_test() {
     if grep -qi "unreachable" <<<"$result"; then
         log_error "Ping of [${database_provider}] includes unreachable host(s)! Check if specified host(s) have openssh-server installed and include public key of id_cass in ~/.ssh/authorized_keys file"
     fi
+
+    log_success "Connection OK"
 }
 
 step_database_setup() {
@@ -192,13 +219,19 @@ move_to_script_directory_if_needed
 
 precheck
 
-log_note "(ﾉ◕ヮ◕)ﾉ*:・ﾟ✧"
+load_args "$@"
 
-log_note "This script performs quick start of 'simple-stack-playground' infrastructure in K8S cluster using Ansible and Terraform on preconfigured data. It does not have rollback feature. In case of any error, try to re-run from particular step."
+if [ -z $run_from_step ]; then
+    log_note "(ﾉ◕ヮ◕)ﾉ*:・ﾟ✧"
 
-log_note "Script does not have rollback feature. In case of any error, try to re-run from particular step."
+    log_note "This script performs quick start of 'simple-stack-playground' infrastructure in K8S cluster using Ansible and Terraform on preconfigured data. It does not have rollback feature. In case of any error, try to re-run from particular step."
 
-require_confirmation "Do you want to run it?"
+    log_warning "Script does not have rollback feature. In case of any error, try to re-run from particular step, e.g. 
+    ./quick-start.sh --from-step=4
+    "
+
+    require_confirmation "Do you want to run it?"
+fi
 
 # @TMP hardcoded because currently no other provider is possible to use for data center
 extract_database_host_from_inventory "postgres"
