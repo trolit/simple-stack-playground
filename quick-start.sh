@@ -196,6 +196,8 @@ log_note "(ﾉ◕ヮ◕)ﾉ*:・ﾟ✧"
 
 log_note "This script performs quick start of 'simple-stack-playground' infrastructure in K8S cluster using Ansible and Terraform on preconfigured data. It does not have rollback feature. In case of any error, try to re-run from particular step."
 
+log_note "Script does not have rollback feature. In case of any error, try to re-run from particular step."
+
 require_confirmation "Do you want to run it?"
 
 # @TMP hardcoded because currently no other provider is possible to use for data center
