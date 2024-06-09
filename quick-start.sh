@@ -11,7 +11,7 @@ database_host=''
 database_provider='postgres'
 run_from_step=''
 
-run_in_strict_mode() {
+run_in_strict_mode_without_pipefall() {
     set -T # inherit DEBUG and RETURN trap for functions
     set -C # prevent file overwrite by > &> <>
     set -E # inherit -e
@@ -213,7 +213,7 @@ step_migrate_database() {
 
 # ---------------------------------------------------------------------------------------
 
-run_in_strict_mode
+run_in_strict_mode_without_pipefall
 
 move_to_script_directory_if_needed
 
