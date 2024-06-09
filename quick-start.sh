@@ -202,7 +202,11 @@ step_apply_infrastructure() {
 }
 
 step_migrate_database() {
-    local pod_name=$(kubectl get pods -o=name | grep -o "api-.*")
+    local pod_name=$(kubectl get pods -o=name | grep -o "api-.*" 2>&1)
+
+    if [ -z $pod_name ]; then
+        log_error "Failed to get api pod name!"
+    fi
 
     local result=$(kubectl exec -it ${pod_name} -- bash -c "npm run db:migrate:dev" 2>&1 | tee /dev/tty)
 
