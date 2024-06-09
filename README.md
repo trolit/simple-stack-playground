@@ -62,7 +62,10 @@
    db1 ansible_host=192.168.0.7
    ```
 
-2. Execute `quick-start.sh` script.
+   > [!NOTE]
+   > Use `ansible postgres -m ping` to test if it's reachable
+
+2. Execute `quick-start.sh` script from root dir.
 
 ### Manual start ⚙️
 
