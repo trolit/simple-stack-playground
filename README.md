@@ -119,3 +119,9 @@
 7. Access app at http://localhost:31000 or http://127.0.0.1:31000
 
 8. Destroy stack using `terraform destroy`
+
+<br/>
+
+---
+
+- [Mikael Krief "Learning DevOps - Second Edition"](https://www.amazon.com/Learning-DevOps-comprehensive-accelerating-Kubernetes/dp/1801818967)
