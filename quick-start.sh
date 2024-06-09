@@ -2,19 +2,20 @@
 
 COLOR_OFF='\033[0m'
 COLOR_RED='\033[0;91m'
+COLOR_CYAN='\033[0;96m'
 COLOR_GREEN='\033[0;92m'
 COLOR_YELLOW='\033[0;93m'
-COLOR_PURPLE='\033[0;95m'
 
 current_step=1
+database_host=''
+database_provider='postgres'
 
 run_in_strict_mode() {
-    set -T          # inherit DEBUG and RETURN trap for functions
-    set -C          # prevent file overwrite by > &> <>
-    set -E          # inherit -e
-    set -e          # exit immediately on errors
-    set -u          # exit on not assigned variables
-    set -o pipefail # exit on pipe failure
+    set -T # inherit DEBUG and RETURN trap for functions
+    set -C # prevent file overwrite by > &> <>
+    set -E # inherit -e
+    set -e # exit immediately on errors
+    set -u # exit on not assigned variables
 }
 
 move_to_script_directory_if_needed() {
@@ -46,6 +47,20 @@ precheck() {
     is_file_available "./database/inventory"
 }
 
+extract_database_host_from_inventory() {
+    log_note "Attempting to extract [${database_provider}] database host from inventory.."
+
+    database_host=$(grep -A2 "\[${database_provider}\]" ./database/inventory | grep -o -P '(?<=ansible_host=).*(?=( |$))')
+
+    if [ -z "${database_host}" ]; then
+        log_error "Extraction failed! Make sure that inventory includes [${database_provider}] entry with ansible_host definition below it!"
+    fi
+
+    sleep 0.2
+
+    log_note "Host: ${database_host}"
+}
+
 log() {
     echo -e "$1[$2]: $3${COLOR_OFF}"
 }
@@ -65,7 +80,7 @@ log_success() {
 }
 
 log_note() {
-    log $COLOR_PURPLE "NOTE" "${1}"
+    log $COLOR_CYAN "NOTE" "${1}"
 }
 
 execute_step() {
@@ -96,6 +111,79 @@ is_action_confirmed() {
     esac
 }
 
+require_confirmation() {
+    local text=$1
+
+    read -p "$(echo -e $text $COLOR_YELLOW"(y/n)"$COLOR_OFF) " choice
+
+    case "$choice" in
+    y) ;;
+    n) ;;
+    *) is_action_confirmed "${text}" ;;
+    esac
+
+    if [ "${choice}" != 'y' ]; then
+        log_note "Exiting..."
+
+        exit 0
+    fi
+}
+
+step_connection_test() {
+    local result=$(bash -c "ansible "${database_provider}" -m ping")
+
+    if grep -qi "unreachable" <<<"$result"; then
+        log_error "Ping of [${database_provider}] includes unreachable host(s)! Check if specified host(s) have openssh-server installed and include public key of id_cass in ~/.ssh/authorized_keys file"
+    fi
+}
+
+step_database_setup() {
+    local result=$(ansible-playbook setup.yaml --extra-vars "role=${database_provider}" -K 2>&1 | tee /dev/tty)
+
+    if grep -qE "(unreachable|failed)=[1-9]+[0-9]{0,}" <<<"$result"; then
+        log_error "Running playbook failed!"
+    fi
+}
+
+step_init_envs() {
+    local example_env_filename='.env.example'
+    local env_filename='.env'
+
+    cp ${example_env_filename} ${env_filename}
+    cp ./api/${example_env_filename} ./api/${env_filename}
+    cp ./client/${example_env_filename} ./client/${env_filename}
+}
+
+step_adjust_database_connection_url() {
+    sed -i "s/REPLACE_WITH_VALID_HOST/${database_host}/g" ./api/.env
+}
+
+step_build_images() {
+    local result=$(docker compose build 2>&1 | tee /dev/tty)
+
+    if grep -iq "error" <<<"$result"; then
+        log_error "Failed to build Docker images!"
+    fi
+}
+
+step_apply_infrastructure() {
+    local result=$(terraform apply -auto-approve 2>&1 | tee /dev/tty)
+
+    if ! grep -iq "Apply complete!" <<<"$result"; then
+        log_error "Failed to apply infrastructure!"
+    fi
+}
+
+step_migrate_database() {
+    local pod_name=$(kubectl get pods -o=name | grep -o "api-.*")
+
+    local result=$(kubectl exec -it ${pod_name} -- bash -c "npm run db:migrate:dev" 2>&1 | tee /dev/tty)
+
+    if grep -iq "error" <<<"$result"; then
+        log_error "Failed to perform database migration!"
+    fi
+}
+
 # ---------------------------------------------------------------------------------------
 
 run_in_strict_mode
@@ -106,10 +194,35 @@ precheck
 
 log_note "(ﾉ◕ヮ◕)ﾉ*:・ﾟ✧"
 
-log_note "This script performs quick start of 'simple-stack-playground' infrastructure in K8S cluster using Ansible and Terraform on preconfigured data. It does not have rollback feature so in case of any error, please try to re-run from step that caused error."
+log_note "This script performs quick start of 'simple-stack-playground' infrastructure in K8S cluster using Ansible and Terraform on preconfigured data. It does not have rollback feature. In case of any error, try to re-run from particular step."
 
-if ! is_action_confirmed "Do you want to run it?"; then
-    log_note "Exiting..."
+require_confirmation "Do you want to run it?"
 
-    exit 0
-fi
+# @TMP hardcoded because currently no other provider is possible to use for data center
+extract_database_host_from_inventory "postgres"
+
+require_confirmation "Is host correct?"
+
+cd ./database
+
+execute_step "Testing connection.." "step_connection_test"
+
+execute_step "Preparing ${database_provider}.." "step_database_setup"
+
+cd ..
+
+execute_step "Creating env files.." "step_init_envs"
+
+execute_step "Adjusting DATABASE_URL/SHADOW_DATABASE_URL.." "step_adjust_database_connection_url"
+
+execute_step "Building Docker images.." "step_build_images"
+
+cd ./infrastructure-as-code
+
+execute_step "Applying infrastructure.." "step_apply_infrastructure"
+
+execute_step "Migrating database.." "step_migrate_database"
+
+log_success "Script completed. Access app at http://localhost:31000 or http://127.0.0.1:31000"
+
+log_note "To destroy infrastructure, use 'terraform destroy'"
