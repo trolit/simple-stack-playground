@@ -7,6 +7,10 @@ import express from 'express';
 export default (app, prisma) => {
     app.use(express.json())
 
+    app.get('/status', function (req, res) {
+        return res.status(200).send();
+    })
+
     app.get('/users', async function (req, res) {
         let users = [];
 

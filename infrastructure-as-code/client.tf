@@ -23,6 +23,16 @@ resource "kubernetes_deployment" "client" {
       }
 
       spec {
+        # option to "wait" until api service becomes available
+        # can be omitted as K8S deployment is responsible for setting "client" service to desired state
+        # init_container {
+        #   name  = "pre-client"
+        #   image = "alpine:3.12"
+        #   command = [
+        #     "/bin/sh", "-c", "wget --no-verbose --tries=1 --spider http://api.default.svc.cluster.local:3000/status || exit 1"
+        #   ]
+        # }
+
         container {
           image             = "client"
           name              = "client"
