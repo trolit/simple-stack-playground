@@ -28,19 +28,16 @@
 
 ## Running project
 
-> [!WARNING]
-> Before taking any action:
-
 1. Check if `ssh` is installed (`ssh -V`)
-2. Prepare VM/machine for database setup via Ansible. It should have:
+2. Create/own VM/machine with Unix based OS. It should have:
 
    - `openssh-server` installed
-   - configured ssh connection with your machine (to change ssh key name view [ansible.cfg](./database/ansible.cfg))
+   - configured ssh connection with your machine
 
    <details>
    <summary>How to configure SSH connection?</summary>
       
-   1. Generate key named `id_cass`
+   1. Generate key named `id_cass` (for different name, reflect change in [ansible.cfg](./database/ansible.cfg))
 
    ```sh
    sh-keygen -t rsa -b 4096 -f ~/.ssh/id_cass
@@ -50,44 +47,28 @@
 
    </details>
 
-> [!WARNING]
-> Ansible playbook uses `su root` to access sudoer user (Debian OS). For different command or username, please modify [setup.yaml](./database/setup.yaml) ([see become-directives](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_privilege_escalation.html#become-directives))
+3. Check if current [become-directives](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_privilege_escalation.html#become-directives) in [setup.yaml](./database/setup.yaml) match VM/machine OS.
 
-### Quick start 🔥
-
-1. Get VM/machine host (`ip a`) and define `inventory`:
+4. Get host of VM/machine using e.g. `ip a` and define `/database/inventory`
 
    ```sh
    [postgres]
    db1 ansible_host=192.168.0.7
    ```
 
-   > Use `ansible postgres -m ping` to test if it's reachable
+   > Use `ansible postgres -m ping` to test if host is reachable. Note that for ping you might have to specify destination user (`ansible_user`).
 
-2. Execute `quick-start.sh` script from root dir.
+### Quick start 🔥
+
+1. Run `quick-start.sh` script from root dir.
 
 ### Manual start ⚙️
 
-1. Go to `/database`
+1. Go to `/database` and execute [setup.yaml](./database/setup.yaml) playbook for PostgreSQL role
 
-   1. Get VM/machine host (`ip a`) and define `inventory`:
-
-      ```sh
-      [postgres]
-      db1 ansible_host=192.168.0.7
-      ```
-
-   2. Test connection
-
-      ```sh
-      ansible postgres -m ping
-      ```
-
-   3. Execute [setup.yaml](./database/setup.yaml) playbook for PostgreSQL role
-
-      ```sh
-      ansible-playbook setup.yaml --extra-vars "role=postgres" -K
-      ```
+   ```sh
+   ansible-playbook setup.yaml --extra-vars "role=postgres" -K
+   ```
 
 2. Create `.env` files (x3) based on `.env.example`.
 
