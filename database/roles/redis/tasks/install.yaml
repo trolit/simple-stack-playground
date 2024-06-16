@@ -1,0 +1,33 @@
+# https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-linux/
+- name: Get redis
+  block:
+      - name: Add dependencies
+        apt:
+          name:
+          - gpg
+          - curl
+          - lsb-release
+
+      - name: Get key
+        shell: "curl -fsSL {{ key_url }} | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg"
+
+      - name: Add repository to apt
+        shell: sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] {{ apt }} $(lsb_release -cs) main" > /etc/apt/sources.list.d/redis.list'
+
+      - name: Update apt
+        apt:
+          update_cache: yes
+
+      - name: Install redis
+        apt:
+          name:
+          - redis={{ version }}
+        register: aptout
+
+      - debug: var=aptout
+
+      - name: Check version
+        shell: redis-server --version
+
+      - name: Enable redis-server
+        shell: sudo systemctl enable redis-server

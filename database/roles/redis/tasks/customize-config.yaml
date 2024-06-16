@@ -1,0 +1,32 @@
+- name: Customize config
+  block:
+      - name: Create conf from sample
+        ansible.builtin.copy:
+          src: ../redis.conf.sample
+          dest: /etc/redis/redis.conf
+          owner: redis
+          group: redis
+          mode: u=rw,g=r
+
+      - name: Include credentials file
+        include_vars:
+          file: credentials.yaml
+          
+      - name: Allow remote access
+        lineinfile: 
+          path: /etc/redis/redis.conf
+          regexp: 'bind 127.0.0.1 -::1' 
+          line: 'bind 0.0.0.0'
+          backrefs: yes
+          firstmatch: yes
+
+      - name: Set password
+        lineinfile: 
+          path: /etc/redis/redis.conf
+          regexp: '# requirepass foobared' 
+          line: 'requirepass {{ password }}'
+          backrefs: yes
+          firstmatch: yes
+
+      - name: Restart service
+        shell: sudo service redis-server restart
